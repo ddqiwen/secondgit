@@ -28,6 +28,7 @@ Button send;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        int i=0;
         send = (Button) findViewById(R.id.Send);
         send.setOnClickListener(new View.OnClickListener() {
             @Override
