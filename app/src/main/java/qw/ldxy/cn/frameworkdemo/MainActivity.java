@@ -6,22 +6,31 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+class returntype
+{
+    public String code;
+    public int msg;
 
+    @Override
+    public String toString() {
+        return "returntype{" +
+                "code='" + code + '\'' +
+                ", msg=" + msg +
+                '}';
+    }
+}
 public class MainActivity extends AppCompatActivity {
 Button send;
     @Override
@@ -51,7 +60,7 @@ Button send;
     };
 
     private void CallWCF() {
-        try {
+      //  try {
 
 // Send GET request to <service>/GetPlates
 
@@ -62,7 +71,41 @@ Button send;
 //            HttpResponse response = httpClient.execute(request);
 //            HttpEntity responseEntity = response.getEntity();
 //            Log.d("WCF", retrieveInputStream(responseEntity));
-            String url = "http://192.168.1.100:8080/Service1.svc/GetData";
+            Gson gson = new Gson();
+
+            /**
+             * 将给定的 JSON 字符串转换成指定的类型对象
+             */
+            String json = "{\"name\":\"Tom\",\"age\":90}";
+            Person person = gson.fromJson(json, Person.class);
+            Log.e("GSON", person.toString());
+
+            /**
+             * 将给定的目标对象转换成 JSON 格式的字符串
+             */
+            String json_Person = gson.toJson(person);
+            Log.e("GSON", json_Person);
+
+            /**
+             * 将给定的集合对象转换成 JSON 格式的字符串
+             */
+            ArrayList<Person> persons = new ArrayList<Person>();
+            Collections.addAll(persons, new Person("tom", 10), new Person("jon", 20));
+            String json_list = gson.toJson(persons);
+            Log.e("GSON", json_list);
+
+            /**
+             * 将给定的 JSON 格式字符串转换为带泛型的集合对象
+             */
+            List<Person> retList = gson.fromJson(json_list, new TypeToken<List<Person>>() {}.getType());
+            for (Person p : retList) {
+                Log.e("GSON", p.toString());
+            }
+
+
+
+
+          /*  String url = "http://192.168.1.100:8080/Service1.svc/GetData";
             // String url = "http://localhost:49952/Service1.svc/GetData";
             //创建连接
             HttpPost httpPost = new HttpPost(url);
@@ -77,17 +120,21 @@ Button send;
             Log.d("Wcf", "result");
             if (httpResponse.getStatusLine().getStatusCode() == 200) {
                 String result = EntityUtils.toString(httpResponse.getEntity()); //获取返回结果
+
+
                 // System.out.println(result);
                 Log.d("Wcf", result);
             }
 
 
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
 
             e.printStackTrace();
 
         }
+        */
 
     }
 
@@ -120,6 +167,36 @@ Button send;
 
         }
         return stringBuffer.toString();
+    }
+
+}
+class Person {
+    private String name;
+    private int age;
+    public Person() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+    public Person(String name, int age) {
+        super();
+        this.name = name;
+        this.age = age;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public int getAge() {
+        return age;
+    }
+    public void setAge(int age) {
+        this.age = age;
+    }
+    @Override
+    public String toString() {
+        return "Person [name=" + name + ", age=" + age + "]";
     }
 
 }
